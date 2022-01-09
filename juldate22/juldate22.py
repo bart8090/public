@@ -105,7 +105,7 @@ label = Label(root, background='white')
 label.place(relx=0.5,rely=0.005,anchor='n')
 label.config(text=str(sdx['juldate']),font=("Helvetica", 74))
 
-month_up_icon = tk.PhotoImage(file='D:/bart/python/juldate22/assets/bluedot15.png') 
+month_up_icon = tk.PhotoImage(file='./juldate22/assets/bluedot15.png') 
 month_up_button = ttk.Button(
     root,
     image=month_up_icon,
@@ -113,7 +113,7 @@ month_up_button = ttk.Button(
 )
 month_up_button.place(x=190,y=0) 
 
-month_down_icon = tk.PhotoImage(file='D:/bart/python/juldate22/assets/bluedot15.png') 
+month_down_icon = tk.PhotoImage(file='./juldate22/assets/bluedot15.png') 
 month_down_button = ttk.Button(
     root,
     image=month_down_icon,
