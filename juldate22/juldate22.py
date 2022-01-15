@@ -10,16 +10,35 @@ from datetime import date
 # if console must be closed, start this python by: pythonw D:/bart/python/juldate22/juldate22.py
 
 def set_sdx():
-    sdx['tdate'] = sdx['tdate'] 
+    if sdx['tdate'] == date.today():
+        sdx['jul_fg'] = 'black'
+    else:
+        sdx['jul_fg'] = 'green'
     sdx['yy'] = sdx['tdate'].year
     sdx['mm'] = sdx['tdate'].month
     sdx['dd'] = sdx['tdate'].day
     mr = calendar.monthrange(sdx['yy'],sdx['mm'])
     sdx['month_startday'] = mr[0]
     sdx['month_nrdays'] = mr[1]
-    sdx['nextmonthtdate'] = sdx['tdate'] + datetime.timedelta(days=sdx['month_nrdays'])
+    if (sdx['mcecnt'] > sdx['pmcecnt']) and (sdx['mcecnt'] < 0):
+        sdx['mcecnt'] = 0
+    if (sdx['mcecnt'] < sdx['pmcecnt']) and (sdx['mcecnt'] > 0):
+        sdx['mcecnt'] = 0
+    sdx['pmcecnt'] = sdx['mcecnt']
+    if sdx['mcecnt'] < 3:    
+        sdx['monthupdate'] = sdx['tdate'] + datetime.timedelta(days=sdx['month_nrdays'])
+    elif sdx['mcecnt'] < 6:
+        sdx['monthupdate'] = sdx['tdate'] + datetime.timedelta(days=30*abs(sdx['mcecnt']))
+    else:
+        sdx['monthupdate'] = sdx['tdate'] + datetime.timedelta(days=90*abs(sdx['mcecnt']))
     pmonth = sdx['tdate'] - datetime.timedelta(days=(sdx['dd']))
-    sdx['pmonthnrdays'] = sdx['tdate'] - datetime.timedelta(calendar.monthrange(pmonth.year,pmonth.month)[1])
+    if sdx['mcecnt'] > -3:
+        sdx['monthdowndate'] = sdx['tdate'] - datetime.timedelta(calendar.monthrange(pmonth.year,pmonth.month)[1])
+    elif sdx['mcecnt'] >= -6:
+        sdx['monthdowndate'] = sdx['tdate'] - datetime.timedelta(days=30*abs(sdx['mcecnt']))
+    else:
+        sdx['monthdowndate'] = sdx['tdate'] - datetime.timedelta(days=90*abs(sdx['mcecnt']))
+    #print(sdx['mcecnt'],sdx['pmcecnt'],sdx['monthupdate'],sdx['monthdowndate'],sdx['tdate'])
     sdx['si'] = (7 - sdx['weekday'] + mr[0]) % 7
     sdx['tdateoffset'] = 6 + sdx['si'] + sdx['dd']
     sdx['butval'] = []
@@ -56,9 +75,10 @@ def butfiller():
         b.config(text=sdx['butval'][i])
         i = i + 1
     root.title(sdx['tdate'].strftime("%b %Y"))
-    label.config(text=str(sdx['juldate']),font=("Helvetica", 74))
+    label.config(text=str(sdx['juldate']),font=("Helvetica", 74),foreground=sdx['jul_fg'])
     
 def butfunction(event):
+    sdx['mcecnt'] = 0
     butlist[sdx['tdateoffset']].config(bg='white') 
     if buttons[event.widget] < 7:
         sdx['weekday'] = (7 + buttons[event.widget] + sdx['weekday']) % 7
@@ -68,21 +88,22 @@ def butfunction(event):
     butfiller()
 
 def month_up_clicked():
-    sdx['tdate'] = sdx['nextmonthtdate'] 
+    sdx['tdate'] = sdx['monthupdate']
+    sdx['mcecnt'] = sdx['mcecnt'] + 1
     butlist[sdx['tdateoffset']].config(bg='white')
     set_sdx()
     butfiller()
 
 def month_down_clicked():
-    sdx['tdate'] = sdx['pmonthnrdays'] 
+    sdx['tdate'] = sdx['monthdowndate']
+    sdx['mcecnt'] = sdx['mcecnt'] - 1
     butlist[sdx['tdateoffset']].config(bg='white')
     set_sdx()
     butfiller()
     
 tdate = date.today()
-sdx = {'tdate' : tdate,'weekday' : 0, 'daylist' : ['ma','di','wo','do','vr','za','zo']}
+sdx = {'tdate' : tdate,'weekday' : 0, 'daylist' : ['ma','di','wo','do','vr','za','zo'], 'mcecnt' : 0, 'pmcecnt' : 0}
 set_sdx()
-#print (sdx)
 
 root = tk.Tk()
 root.title(tdate.strftime("%b %Y"))
@@ -94,7 +115,7 @@ for i in range(7*7):
     b = tk.Button(root, text=sdx['butval'][i])
     buttons[b] = i 
     b.bind("<Button-1>", butfunction)
-    c1 = 20 + ((i % 7) * 27)
+    c1 = 21 + ((i % 7) * 27)
     c2 = 113 + ((math.trunc(i / 7)) * 16)
     b.place(x=c1,y=c2)
     b.config(height=1, width=2, borderwidth=0, bg='white', font=("Helvetica", 7))
@@ -105,7 +126,7 @@ label = Label(root, background='white')
 label.place(relx=0.5,rely=0.005,anchor='n')
 label.config(text=str(sdx['juldate']),font=("Helvetica", 74))
 
-month_up_icon = tk.PhotoImage(file='./juldate22/assets/bluedot15.png') 
+month_up_icon = tk.PhotoImage(file='D:/bart/python/juldate22/assets/bluedot15.png') 
 month_up_button = ttk.Button(
     root,
     image=month_up_icon,
@@ -113,7 +134,7 @@ month_up_button = ttk.Button(
 )
 month_up_button.place(x=190,y=0) 
 
-month_down_icon = tk.PhotoImage(file='./juldate22/assets/bluedot15.png') 
+month_down_icon = tk.PhotoImage(file='D:/bart/python/juldate22/assets/bluedot15.png') 
 month_down_button = ttk.Button(
     root,
     image=month_down_icon,
