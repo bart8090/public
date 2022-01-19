@@ -14,6 +14,7 @@ def set_sdx():
         sdx['jul_fg'] = 'black'
     else:
         sdx['jul_fg'] = 'green'
+    sdx['pdatelist'].append(sdx['tdate'])
     sdx['yy'] = sdx['tdate'].year
     sdx['mm'] = sdx['tdate'].month
     sdx['dd'] = sdx['tdate'].day
@@ -38,7 +39,6 @@ def set_sdx():
         sdx['monthdowndate'] = sdx['tdate'] - datetime.timedelta(days=30*abs(sdx['mcecnt']))
     else:
         sdx['monthdowndate'] = sdx['tdate'] - datetime.timedelta(days=90*abs(sdx['mcecnt']))
-    #print(sdx['mcecnt'],sdx['pmcecnt'],sdx['monthupdate'],sdx['monthdowndate'],sdx['tdate'])
     sdx['si'] = (7 - sdx['weekday'] + mr[0]) % 7
     sdx['tdateoffset'] = 6 + sdx['si'] + sdx['dd']
     sdx['butval'] = []
@@ -66,7 +66,6 @@ def set_sdx():
         sdx['butval'].append(' ')
         sdx['datelist'].append(id+datetime.timedelta(days=ic))
         ic = ic+1
-        #return sdx
 
 def butfiller():
     butlist[sdx['tdateoffset']].config(bg='skyblue') 
@@ -100,9 +99,25 @@ def month_down_clicked():
     butlist[sdx['tdateoffset']].config(bg='white')
     set_sdx()
     butfiller()
-    
+
+def current_date_clicked():
+    sdx['tdate'] = date.today()
+    sdx['mcecnt'] = 0
+    butlist[sdx['tdateoffset']].config(bg='white')
+    set_sdx()
+    butfiller()
+
+def prev_date_clicked():
+    if len(sdx['pdatelist']) > 1:
+        trash = sdx['pdatelist'].pop()
+        sdx['tdate'] = sdx['pdatelist'].pop()
+    sdx['mcecnt'] = 0
+    butlist[sdx['tdateoffset']].config(bg='white')
+    set_sdx()
+    butfiller()
+
 tdate = date.today()
-sdx = {'tdate' : tdate,'weekday' : 0, 'daylist' : ['ma','di','wo','do','vr','za','zo'], 'mcecnt' : 0, 'pmcecnt' : 0}
+sdx = {'tdate' : tdate, 'weekday' : 0, 'pdatelist' : [tdate], 'daylist' : ['ma','di','wo','do','vr','za','zo'], 'mcecnt' : 0, 'pmcecnt' : 0}
 set_sdx()
 
 root = tk.Tk()
@@ -141,5 +156,21 @@ month_down_button = ttk.Button(
     command=month_down_clicked
 )
 month_down_button.place(x=5,y=0)
+
+current_date_icon = tk.PhotoImage(file='D:/bart/python/juldate22/assets/bluedot15.png') 
+current_date_button = ttk.Button(
+    root,
+    image=current_date_icon,
+    command=current_date_clicked
+)
+current_date_button.place(x=190,y=85)
+
+prev_date_icon = tk.PhotoImage(file='D:/bart/python/juldate22/assets/bluedot15.png') 
+prev_date_button = ttk.Button(
+    root,
+    image=prev_date_icon,
+    command=prev_date_clicked
+)
+prev_date_button.place(x=5,y=85)
 
 root.mainloop()
