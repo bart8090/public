@@ -141,7 +141,7 @@ label = Label(root, background='white')
 label.place(relx=0.5,rely=0.005,anchor='n')
 label.config(text=str(sdx['juldate']),font=("Helvetica", 74))
 
-month_up_icon = tk.PhotoImage(file='D:/bart/python/juldate22/assets/bluedot15.png') 
+month_up_icon = tk.PhotoImage(file='./juldate22/assets/bluedot15.png') 
 month_up_button = ttk.Button(
     root,
     image=month_up_icon,
@@ -149,7 +149,7 @@ month_up_button = ttk.Button(
 )
 month_up_button.place(x=190,y=0) 
 
-month_down_icon = tk.PhotoImage(file='D:/bart/python/juldate22/assets/bluedot15.png') 
+month_down_icon = tk.PhotoImage(file='./juldate22/assets/bluedot15.png') 
 month_down_button = ttk.Button(
     root,
     image=month_down_icon,
@@ -157,7 +157,7 @@ month_down_button = ttk.Button(
 )
 month_down_button.place(x=5,y=0)
 
-current_date_icon = tk.PhotoImage(file='D:/bart/python/juldate22/assets/bluedot15.png') 
+current_date_icon = tk.PhotoImage(file='./juldate22/assets/bluedot15.png') 
 current_date_button = ttk.Button(
     root,
     image=current_date_icon,
@@ -165,7 +165,7 @@ current_date_button = ttk.Button(
 )
 current_date_button.place(x=190,y=85)
 
-prev_date_icon = tk.PhotoImage(file='D:/bart/python/juldate22/assets/bluedot15.png') 
+prev_date_icon = tk.PhotoImage(file='./juldate22/assets/bluedot15.png') 
 prev_date_button = ttk.Button(
     root,
     image=prev_date_icon,
